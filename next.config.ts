@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
+  // TypeScript avisa si un <Link> apunta a una ruta que no existe.
+  typedRoutes: true,
   turbopack: {
     rules: {
       "*.css": {
