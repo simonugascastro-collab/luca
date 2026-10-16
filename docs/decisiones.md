@@ -372,7 +372,7 @@ Haiku 5.5 (`claude-haiku-5-5`) cuesta US$0,10 por millón de tokens de entrada y
 1. **Proveedor de tu agente de WhatsApp** (`whatsapp-saas`): ¿API oficial de Meta, Twilio o librería no oficial? Para responder, abre su código y busca `graph.facebook.com` (Meta), `twilio` o `baileys` / `whatsapp-web.js`.
    - **Si es Meta:** reutilizamos tu app de Meta, el número y el código de verificación del webhook. Ahorra ~1 hora en la semana 6.
    - **Si es otro:** solo reutilizamos la lógica y los prompts; la conexión se hace nueva con Meta.
-2. **URL de la demo:** `luca-demo.vercel.app` es gratis. Un dominio propio se paga cada año.
+2. **URL de la demo:** resuelto el 16-10-2026 → **https://luca-finanzas.vercel.app** (gratis).
 3. **Repo público desde el día 1** (recomendado). La condición es que nunca subas un `.env.local`: el `.gitignore` y la push protection de GitHub te cuidan.
 
 ## Fuentes principales
