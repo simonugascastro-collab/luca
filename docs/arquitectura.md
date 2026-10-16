@@ -338,7 +338,7 @@ luca/
 |---|---|---|---|---|
 | Local | `localhost:3000` | `luca-dev` | test | simulador |
 | Preview (cada PR) | `luca-git-<rama>-….vercel.app` | `luca-dev` | test | simulador |
-| Producción | `luca-demo.vercel.app` (por confirmar) | `luca-prod` | test | número de prueba de Meta |
+| Producción | `luca-finanzas.vercel.app` | `luca-prod` | test | número de prueba de Meta |
 
 ## Variables de entorno
 

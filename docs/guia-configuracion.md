@@ -30,10 +30,15 @@ brew upgrade supabase
 supabase --version           # → 2.121 o superior
 ```
 
-Después, crea el proyecto con los comandos exactos de **LUC-2** en [plan.md](plan.md#luc-2--crear-el-proyecto-nextjs-164-y-el-repo-en-github). Ojo con dos cosas:
+Lo que encontramos al hacerlo (16-10-2026):
 
-1. **La carpeta tiene que llamarse `luca`, en minúsculas.** npm no acepta mayúsculas en el nombre del proyecto (lo probé: `create-next-app` falla con "LUCA").
-2. **`create-next-app` no acepta un `CLAUDE.md` en la carpeta.** Por eso lo apartamos un momento y lo devolvemos después.
+1. **`~/.npmrc` rompía `npm install`.** Tenía la línea `allow-scripts=@anthropic-ai/claude-code`, y el npm de Node 24 (11.19) rechaza esa opción dentro de un proyecto (error `EALLOWSCRIPTS`). Se renombró a `~/.npmrc.respaldo`.
+2. **`claude` y `vercel` estaban instalados dentro de Node 26.** Al pasar a Node 24 habrían desaparecido de la terminal. Solución:
+   ```bash
+   nvm use 26 && claude install      # Claude Code nativo en ~/.local/bin: ya no depende de Node
+   nvm use 24 && npm install -g vercel
+   ```
+3. **npm no acepta mayúsculas en el nombre del proyecto**, y la carpeta se llama `LUCA`. Por eso el proyecto se crea en una subcarpeta `luca` y se sube un nivel. Los comandos exactos están en **LUC-2** de [plan.md](plan.md#luc-2--crear-el-proyecto-nextjs-164-y-el-repo-en-github).
 
 ---
 
@@ -327,8 +332,9 @@ Pasos:
 
 | Síntoma | Causa | Solución |
 |---|---|---|
-| `name can no longer contain capital letters` | La carpeta se llama `LUCA` | Renómbrala a `luca` (LUC-2, paso 1) |
-| `The directory … contains files that could conflict: CLAUDE.md` | `create-next-app` quiere la carpeta casi vacía | Aparta `CLAUDE.md` en `docs/` y devuélvelo después |
+| `name can no longer contain capital letters` | La carpeta se llama `LUCA` | Crea el proyecto en la subcarpeta `luca` y súbelo un nivel (LUC-2) |
+| `npm error code EALLOWSCRIPTS` | La línea `allow-scripts=…` en `~/.npmrc` | `mv ~/.npmrc ~/.npmrc.respaldo` |
+| `command not found: claude` (o `vercel`) en una terminal nueva | Estaban instalados dentro de otra versión de Node | Claude Code nativo (`claude install`) y `npm install -g vercel` en Node 24 |
 | `Failed to resolve base branch "HEAD"` al usar `--worktree` | El repo no tiene commits | Haz el primer commit |
 | La demo muestra un error de conexión a la base | Supabase pausó el proyecto por 7 días sin actividad | Dashboard de Supabase → *Restore*. Revisa que el cron diario esté corriendo |
 | `/mcp` no muestra Linear | No se agregó o no se autenticó | `claude mcp list`. Si aparece, vuelve a autenticar con `/mcp` |

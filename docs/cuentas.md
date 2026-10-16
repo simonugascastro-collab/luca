@@ -42,7 +42,7 @@
 | Google Cloud | Botón "Entrar con Google" | 🟢 |
 | PostHog | Analítica con grabación de sesiones | 🟢 1 millón de eventos/mes |
 | Conductor | Varios agentes en paralelo | 🟢 la app (usa tu plan de Claude); tiene planes de pago para nube y equipos |
-| Dominio propio (por ejemplo, `luca.cl`) | URL más profesional | 🔴 pago anual. **No hace falta:** `luca-demo.vercel.app` es gratis |
+| Dominio propio (por ejemplo, `luca.cl`) | URL más profesional | 🔴 pago anual. **No hace falta:** `luca-finanzas.vercel.app` es gratis |
 
 ## Antes de crear cuentas: edad mínima
 

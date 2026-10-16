@@ -57,48 +57,46 @@
 
 ### LUC-1 · Preparar el Mac: Node 24, GitHub CLI y Supabase CLI
 `chore` · Alta · 0,5 h
-- **Qué:** `nvm install 24 && nvm alias default 24` · `brew install gh && gh auth login` · `brew upgrade supabase`.
-- **Listo cuando:** `node -v` → v24.x · `gh auth status` muestra tu usuario · `supabase --version` ≥ 2.121.
+- **Qué:** `nvm install 24 && nvm alias default 24` · `brew install gh && gh auth login` (protocolo HTTPS) · `brew upgrade supabase`.
+- **Lo que pasó en la práctica:**
+  - El `~/.npmrc` tenía `allow-scripts=@anthropic-ai/claude-code`, y el npm de Node 24 (11.19) rechaza esa opción dentro de un proyecto. Se renombró a `~/.npmrc.respaldo`.
+  - Claude Code y el CLI de Vercel estaban instalados dentro de Node 26. Claude Code pasó a su versión nativa (`claude install`) y Vercel se reinstaló en Node 24 (`npm install -g vercel`).
+- **Listo cuando:** en una terminal nueva, `node -v` → v24.x · `claude --version` y `vercel --version` responden · `gh auth status` muestra tu usuario · `supabase --version` ≥ 2.121.
 
 ### LUC-2 · Crear el proyecto Next.js 16.4 y el repo en GitHub
 `infra` · Alta · 1 h
-- **Qué:** sigue estos pasos en orden.
+- **Qué:** npm no acepta mayúsculas en el nombre del proyecto, y la carpeta se llama `LUCA`. Renombrarla rompe el workspace de VS Code, así que el proyecto se crea en una subcarpeta `luca` y después se sube un nivel. Comandos, uno a la vez, en la terminal de VS Code:
   ```bash
-  # 1) Cierra VS Code. La carpeta debe estar en minúsculas: npm no acepta "LUCA" como nombre.
-  cd ~/Desktop && mv LUCA luca-tmp && mv luca-tmp luca && cd luca
-
-  # 2) create-next-app no acepta un CLAUDE.md en la carpeta: lo apartamos un momento.
-  mv CLAUDE.md docs/CLAUDE.md.tmp
-  npx create-next-app@16.4.2 . --ts --tailwind --biome --app --src-dir \
-    --react-compiler --cache-components --import-alias "@/*" \
-    --use-npm --agents-md --no-agent-feedback --yes
-  mv docs/CLAUDE.md.tmp CLAUDE.md
-
-  # 3) El template trae algunas versiones atrasadas: las subimos.
-  npm install react@19.3 react-dom@19.3
-  npm install -D @types/node@24 @biomejs/biome@2.5
+  cd ~/Desktop/LUCA
+  nvm use 24
+  git config --global init.defaultBranch main
+  npx create-next-app@16.4.2 luca --ts --tailwind --biome --app --src-dir --react-compiler --cache-components --import-alias "@/*" --use-npm --agents-md --no-agent-feedback --disable-git --yes
+  find luca -mindepth 1 -maxdepth 1 -exec mv {} . \;   # sube todo, incluidos los archivos ocultos
+  rmdir luca
+  npm install react@19.3.1 react-dom@19.3.1
+  npm install -D @types/node@24 @biomejs/biome@2.5.15
   npx biome migrate --write
   echo "24" > .nvmrc
-
-  # 4) Commit y repo público.
-  git add -A && git commit -m "chore: agrega CLAUDE.md y actualiza versiones base"
+  git init && git add -A
+  git commit -m "chore: proyecto base Next.js 16.4 + documentos de planificación"
   gh repo create luca --public --source=. --push
-  code .
   ```
-- **Después (con Claude):**
-  - Agregar `"engines": { "node": "24.x" }` en `package.json`.
-  - Agregar `noUncheckedIndexedAccess: true` en `tsconfig.json`.
-  - Agregar `typedRoutes: true` en `next.config.ts`.
-- **Listo cuando:** `npm run dev` abre `localhost:3000` · el repo `luca` existe en GitHub, es público e incluye `CLAUDE.md` y `docs/`.
+- **Ajustes en el primer PR** (`simon/luc-2-ajustes-base`):
+  - `engines` Node 24.x en `package.json`.
+  - `noUncheckedIndexedAccess` en `tsconfig.json`.
+  - `typedRoutes` en `next.config.ts`.
+  - Región `gru1` en `vercel.json`.
+  - Portada "próximamente" en vez de la página de ejemplo, y borrado de los 5 SVG de la plantilla, que Biome 2.5 marca como error.
+- **Listo cuando:** `npm run dev` abre `localhost:3000` · el repo [luca](https://github.com/simonugascastro-collab/luca) es público e incluye `CLAUDE.md` y `docs/` · `npm run lint` pasa sin errores.
 
 ### LUC-3 · Conectar Vercel y hacer el primer deploy
 `infra` · Alta · 0,5 h
 - **Qué:**
-  1. vercel.com → *Add New → Project* → importa `luca` desde GitHub.
-  2. Ponle `luca-demo` al proyecto: ese nombre define la URL.
-  3. *Settings → Deployment Protection:* la producción debe quedar pública.
-  4. *Settings → Functions:* región São Paulo (`gru1`), si tu plan lo permite, para quedar cerca de Supabase.
-- **Listo cuando:** la URL de producción abre en una ventana de incógnito sin pedir login · un PR de prueba genera un preview.
+  1. [vercel.com/new](https://vercel.com/new) → importa `luca` desde GitHub → *Deploy*.
+  2. `luca.vercel.app` estaba tomada y Vercel asignó `luca-three-beige.vercel.app`. Se agregó el dominio gratis **`luca-finanzas.vercel.app`** (*Settings → Domains*).
+  3. *Deployment Protection* quedó en el modo estándar: la producción es pública y los previews piden login de Vercel (solo tú los ves). Comprobado con `curl`: la producción responde 200.
+  4. Región São Paulo (`gru1`): va en `vercel.json`, en el primer PR. El plan Hobby permite elegir una región.
+- **Listo cuando:** `https://luca-finanzas.vercel.app` abre en incógnito sin pedir login · el primer PR genera un preview.
 
 ### LUC-4 · Configurar Claude Code para el proyecto
 `chore` · Alta · 0,5 h
@@ -133,6 +131,7 @@
   - `src/lib/env.ts` con Zod 4, separando variables de servidor y públicas.
   - `.env.example` con todos los nombres de la [tabla de arquitectura](arquitectura.md#variables-de-entorno).
   - El paquete `server-only` en los módulos con secretos.
+  - Ojo: el `.gitignore` de Next ignora `.env*`, incluido `.env.example`. Hay que agregar la línea `!.env.example` para que sí se suba.
 - **Listo cuando:** si falta una variable, `npm run dev` falla con un mensaje claro en español.
 
 ## S2 · Datos y acceso (26 oct–1 nov)

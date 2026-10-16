@@ -4,7 +4,7 @@
 
 ## Qué es
 
-App de finanzas personales para Chile y demo de portafolio de Simón (lanzamiento: 14-12-2026). Stack: Next.js 16.4 (App Router), Supabase (Postgres + RLS), Claude Haiku 5.5, Fintoc en modo test, WhatsApp Cloud API y PWA en Vercel.
+App de finanzas personales para Chile y demo de portafolio de Simón (lanzamiento: 14-12-2026). Producción: https://luca-finanzas.vercel.app · Repo: github.com/simonugascastro-collab/luca. Stack: Next.js 16.4 (App Router), Supabase (Postgres + RLS), Claude Haiku 5.5, Fintoc en modo test, WhatsApp Cloud API y PWA en Vercel.
 
 Antes de decidir algo de arquitectura, lee el documento que corresponda:
 - `docs/decisiones.md`: herramientas, versiones y por qué.
